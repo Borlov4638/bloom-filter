@@ -14,7 +14,7 @@ type Filter struct {
 func (f *Filter) GetReadebleBitmap() string {
 	res := ""
 
-	for _, val := range f.bitMap {
+	for _, val := range f.BitMap {
 		if val {
 			res += "1"
 		} else {
@@ -39,27 +39,27 @@ func NewFilter(size int, h []HashFunction) Filter {
 }
 
 func (f *Filter) AddValue(value string) error {
-	for _, hFunc := range f.hashFunctions {
+	for _, hFunc := range f.HashFunctions {
 		hRes, err := hFunc(value)
 		if err != nil {
 			return err
 		}
 
-		bitMapIdx := modBytesByCapacity(hRes, f.capacity)
-		f.bitMap[bitMapIdx] = true
+		bitMapIdx := modBytesByCapacity(hRes, f.Capacity)
+		f.BitMap[bitMapIdx] = true
 	}
 	return nil
 }
 
 func (f *Filter) IsValueExists(value string) (bool, error) {
-	for _, hFunc := range f.hashFunctions {
+	for _, hFunc := range f.HashFunctions {
 		hRes, err := hFunc(value)
 		if err != nil {
 			return false, err
 		}
 
-		bitMapIdx := modBytesByCapacity(hRes, f.capacity)
-		if !f.bitMap[bitMapIdx] {
+		bitMapIdx := modBytesByCapacity(hRes, f.Capacity)
+		if !f.BitMap[bitMapIdx] {
 			return false, nil
 		}
 	}
