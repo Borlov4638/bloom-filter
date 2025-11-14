@@ -7,7 +7,7 @@ import (
 
 type HashFunction func(value string) ([]byte, error)
 
-func Sha256WithSalt(value, salt string) ([]byte, error) {
+func sha256WithSalt(value, salt string) ([]byte, error) {
 	h := sha256.New()
 	_, err := h.Write([]byte(value + salt))
 	if err != nil {
@@ -16,7 +16,7 @@ func Sha256WithSalt(value, salt string) ([]byte, error) {
 	return h.Sum(nil), nil
 }
 
-func Sha512WithSalt(value, salt string) ([]byte, error) {
+func sha512WithSalt(value, salt string) ([]byte, error) {
 	h := sha512.New()
 	_, err := h.Write([]byte(value + salt))
 	if err != nil {
@@ -25,18 +25,18 @@ func Sha512WithSalt(value, salt string) ([]byte, error) {
 	return h.Sum(nil), nil
 }
 
-func GetKHashFunctionos(k int) []HashFunction {
+func getKHashFunctionos(k int) []HashFunction {
 	res := make([]HashFunction, k)
 
 	for i := 0; i < k; i++ {
 		genFunction := func(value string) ([]byte, error) {
 			switch i % 2 {
 			case 0:
-				return Sha256WithSalt(value, string(i))
+				return sha256WithSalt(value, string(i))
 			case 1:
-				return Sha512WithSalt(value, string(i))
+				return sha512WithSalt(value, string(i))
 			default:
-				return Sha256WithSalt(value, string(i))
+				return sha256WithSalt(value, string(i))
 			}
 		}
 		res[i] = genFunction

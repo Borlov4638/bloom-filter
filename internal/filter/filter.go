@@ -1,13 +1,14 @@
 package filter
 
 import (
+	"math"
 	"math/big"
 )
 
 type Filter struct {
-	bitMap        []bool
-	hashFunctions []HashFunction
-	capacity      int
+	BitMap        []bool
+	HashFunctions []HashFunction
+	Capacity      int
 }
 
 func (f *Filter) GetReadebleBitmap() string {
@@ -21,6 +22,12 @@ func (f *Filter) GetReadebleBitmap() string {
 		}
 	}
 	return res
+}
+
+func NewFilterByProb(p float64, n int) Filter {
+	k, m := getOptimalParams(p, n)
+	hashFunctions := getKHashFunctionos(k)
+	return NewFilter(m, hashFunctions)
 }
 
 func NewFilter(size int, h []HashFunction) Filter {
@@ -66,4 +73,11 @@ func modBytesByCapacity(b []byte, capacity int) int {
 
 	z := new(big.Int).Mod(intager, bigCap)
 	return int(z.Int64())
+}
+
+func getOptimalParams(p float64, n int) (k, m int) {
+	m = -int(math.Floor((float64(n) * math.Log(p)) / (math.Pow(math.Log(2.0), 2))))
+	log2 := float64(math.Log(2.0))
+	k = int(math.Floor((float64(m) / float64(n)) * log2))
+	return k, m
 }
